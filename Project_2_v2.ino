@@ -19,7 +19,7 @@ class StateChange{
       buttonState = digitalRead(buttonPin);
       if (buttonState != lastButtonState) {
         if (buttonState == HIGH) {
-          delay(500);
+          delay(400);
           buttonPushCounter++;
           //Serial.println("on");
           //Serial.print("number of button pushes:  ");
@@ -78,6 +78,7 @@ void setup() {
 
   servoDoor.attach(servoPinDoor);
   servoPlayer.attach(servoPinPlayer);
+  servoMinotaur.attach(servoPinMinotaur);
   
   void start();
 }
@@ -95,6 +96,7 @@ void start(){
 
   servoStateDoor = 0;
   servoStatePlayer = 0;
+  servoStateMinotaur = 0;
 }
 
 void loop() {
@@ -106,23 +108,21 @@ void loop() {
     start();
   }
   else{
-    
     isGameOn = true;
-    //Serial.println("the game has began");
     //player goes up to the key
     if(digitalRead(switchPinKey) == HIGH && isKeyTaken == false){
       isKeyTaken = true;
       ledStateKey = LOW;
       // servo to open door activate
-      servoStateDoor = 90; 
-      Serial.println("YES");  
+      servoStateDoor = 90;   
     }
 
     if(digitalRead(switchPinMinotaur) == HIGH && isMinotaurDead == false){
       isMinotaurDead = true;
       servoStatePlayer = 90;
+      delay(250);
+      servoStateMinotaur = 90;
       ledStateComplete = HIGH;
-      Serial.print("Spin");
     }
   }
 
@@ -131,15 +131,16 @@ void loop() {
     digitalWrite(ledPinComplete, ledStateComplete); 
     servoDoor.write(servoStateDoor);
     servoPlayer.write(servoStatePlayer);
+    servoMinotaur.write(servoStateMinotaur);
   }
   else{
     digitalWrite(ledPinKey, LOW);
     digitalWrite(ledPinComplete, LOW);
     servoDoor.write(0);   
-    delay(1000);
+    delay(100);
     servoPlayer.write(0);
+    delay(100);
+    servoMinotaur.write(0);
+    delay(100);
   }
-
-  
-  
 }
